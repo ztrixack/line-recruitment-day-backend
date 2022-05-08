@@ -68,10 +68,9 @@ pkg                         // library code that's ok to use by external applica
 
 - [] Setup Project
   - [*] Initial Go modules and setup folder structure
-  - [ ] Install configure automatic formatting and development helper
-  - [ ] Install Viper, leveled logging, and crypto encoding modules
-  - [ ] Install mandatory modules (fiber, gorm, Postgres, validate)
-  - [ ] setup project with sample config & env
+  - [*] Install configure automatic formatting and development helper
+  - [*] Install Viper, leveled logging, and crypto encoding modules
+  - [*] setup project with sample config & env
 
 - [ ] Features/Repositories
   - [ ] Initial database and add core modules
