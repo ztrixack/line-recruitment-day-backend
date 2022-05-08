@@ -26,6 +26,13 @@ To get a local copy up and running follow these simple example steps.
    go mod tidy
    ```
 
+### Run on local
+
+   ```sh
+   cd cmd/service/
+   go run main.go
+   ```
+
 ### Testing
 
 This is a command for run all tests:

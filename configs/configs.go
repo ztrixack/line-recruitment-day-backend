@@ -42,6 +42,16 @@ func initConfig() {
 		Timezone: viper.GetString("app.timezone"),
 		Cost:     viper.GetInt("app.cost"),
 	}
+
+	Database = databaseConfig{
+		Driver:   viper.GetString("database.driver"),
+		Host:     viper.GetString("database.host"),
+		Port:     viper.GetInt("database.port"),
+		Username: viper.GetString("database.username"),
+		Password: viper.GetString("database.password"),
+		Database: viper.GetString("database.database"),
+		SSLMode:  viper.GetString("database.sslmode"),
+	}
 }
 
 func initTimeZone() {

@@ -3,3 +3,12 @@ app:
   stage: "development"
   timezone: "Asia/Bangkok"
   cost: 13
+
+database:
+  driver: "postgres"
+  host: "127.0.0.1"
+  port: 5432
+  username: "guest"
+  password: "guest"
+  database: "sqldb"
+  sslmode: "disable"
