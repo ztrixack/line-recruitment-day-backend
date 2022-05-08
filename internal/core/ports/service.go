@@ -1,6 +1,8 @@
 package ports
 
-import "election-service/internal/core/models"
+import (
+	"election-service/internal/core/models"
+)
 
 type ElectionService interface {
 	GetElection() models.Response
