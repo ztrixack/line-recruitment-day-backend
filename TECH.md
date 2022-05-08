@@ -63,6 +63,7 @@ internal                    // private application and library code.
 mocks                       // mockup data for test
 pkg                         // library code that's ok to use by external applications
 
+<!-- DATABASE -->
 ## Eloquent ORM Relationships
 ### Entity Database
 
@@ -111,11 +112,9 @@ pkg                         // library code that's ok to use by external applica
   - [*] Install Viper, leveled logging, and crypto encoding modules
   - [*] setup project with sample config & env
 
-- [ ] Features/Repositories
+- [*] Features/Repositories
   - [*] Initial database and add core modules
-  - [ ] Create repository ports
-  - [ ] Add candidate, voter, and election repository
-  - [ ] Refactor the mockup view
+  - [*] Create ports and repository
 
 - [ ] Features/Services
   - [ ] Add request and response service model
