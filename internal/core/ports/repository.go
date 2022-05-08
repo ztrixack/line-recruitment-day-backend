@@ -14,6 +14,8 @@ type CandidateRepository interface {
 }
 
 type CandidateVoteRepository interface {
+	Create(models.CandidateVote) (*models.CandidateVote, error)
+	Find() ([]models.CandidateVote, error)
 	FindByID(int) (*models.CandidateVote, error)
 	UpdateByID(int, models.Json) (int, error)
 }
@@ -21,4 +23,5 @@ type CandidateVoteRepository interface {
 type VoterRepository interface {
 	Create(models.Voter) (*models.Voter, error)
 	FindByID(int) (*models.Voter, error)
+	UpdateByID(int, models.Json) (int, error)
 }

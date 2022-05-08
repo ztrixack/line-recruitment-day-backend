@@ -14,6 +14,7 @@ type CandidateService interface {
 }
 
 type CandidateVoteService interface {
+	CreateCandidateVote(models.CreateCandidateVoteData) models.Response
 	GetCandidateVote(int) models.Response
 	UpdateCandidateVote(int, models.UpdateCandidateVoteData) models.Response
 }

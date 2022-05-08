@@ -6,6 +6,11 @@ type CandidateVote struct {
 	VotedCount  int `json:"votedCount"`
 }
 
+type CreateCandidateVoteData struct {
+	CandidateId int `json:"candidateId"`
+	VotedCount  int `json:"votedCount"`
+}
+
 type UpdateCandidateVoteData struct {
 	VotedCount int `json:"votedCount"`
 }
