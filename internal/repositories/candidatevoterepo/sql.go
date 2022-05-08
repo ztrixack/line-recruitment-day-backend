@@ -14,6 +14,16 @@ func NewSQL(db *gorm.DB) repositorySQL {
 	return repositorySQL{db: db}
 }
 
+// Create Record
+func (r repositorySQL) Create(entity models.CandidateVote) (*models.CandidateVote, error) {
+	tx := r.db.Create(&entity)
+	if tx.Error != nil {
+		return nil, tx.Error
+	}
+
+	return &entity, nil
+}
+
 // Retrieving objects with primary key
 func (r repositorySQL) FindByID(id int) (*models.CandidateVote, error) {
 	var entity models.CandidateVote
@@ -27,14 +37,4 @@ func (r repositorySQL) FindByID(id int) (*models.CandidateVote, error) {
 	}
 
 	return &entity, nil
-}
-
-// Update with primary key
-func (r repositorySQL) UpdateByID(id int, entity models.Json) (int, error) {
-	tx := r.db.Model(&models.CandidateVote{}).Where("id = ?", id).Updates(&entity)
-	if tx.Error != nil {
-		return int(tx.RowsAffected), tx.Error
-	}
-
-	return int(tx.RowsAffected), nil
 }

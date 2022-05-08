@@ -117,8 +117,7 @@ pkg                         // library code that's ok to use by external applica
   - [*] Create ports and repository
 
 - [ ] Features/Services
-  - [ ] Add request and response service model
-  - [ ] Create service ports
+  - [*] Create service ports
   - [ ] Add candidate, voter, and election service
   - [ ] Refactor services and repositories
  

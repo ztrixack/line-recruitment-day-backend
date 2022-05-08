@@ -6,6 +6,11 @@ type Voter struct {
 	NationalId  string `json:"nationalId"`
 }
 
+type CreateVoterData struct {
+	CandidateId int    `json:"candidateId"`
+	NationalId  string `json:"nationalId"`
+}
+
 type VoterResponse struct {
 	Id          int    `json:"id"`
 	CandidateId int    `json:"candidateId"`

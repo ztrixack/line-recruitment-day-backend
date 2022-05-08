@@ -14,3 +14,8 @@ type Model struct {
 	UpdatedAt time.Time      `json:"-"`
 	DeletedAt gorm.DeletedAt `json:"-" gorm:"index"`
 }
+
+type Response struct {
+	Success bool         `json:"success"`
+	Data    *interface{} `json:"data,omitempty"`
+}
