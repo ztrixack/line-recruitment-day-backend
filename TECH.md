@@ -63,20 +63,58 @@ internal                    // private application and library code.
 mocks                       // mockup data for test
 pkg                         // library code that's ok to use by external applications
 
+<!-- DATABASE -->
+## Eloquent ORM Relationships
+### Entity Database
+
+| Key | Entity        |
+| --- | ------------- |
+| PK  | id: int       |
+|     | enable: bool  |
+|     | state: string |
+
+| Key | Candidate         |
+| --- | ----------------- |
+| PK  | id: int           |
+|     | name: string      |
+|     | dob: string       |
+|     | bioLink: string   |
+|     | imageLink: string |
+|     | policy: string    |
+
+| Key | Voter              |
+| --- | ------------------ |
+| PK  | id: int            |
+| FK  | candidateId: int   |
+|     | nationalId: string |
+
+| Key | Candidate Vote     |
+| --- | ------------------ |
+| PK  | id: int            |
+| FK  | candidateId: int   |
+|     | votedCount: string |
+
+### Entity Relationship
+
+| Entity         | Relationships | With Entity    | Foreign Key | Pivot Table |
+| :------------- | :------------ | :------------- | :---------- | :---------- |
+| Candidate      | Has Many      | Voter          |             |             |
+| Candidate      | Has One       | Candidate Vote |             |             |
+| Voter          | Belongs To    | Candidate      | candidateId |             |
+| Candidate Vote | Belongs To    | Candidate      | candidateId |             |
+
 <!-- ROADMAP -->
 ## Roadmap
 
-- [] Setup Project
+- [*] Setup Project
   - [*] Initial Go modules and setup folder structure
   - [*] Install configure automatic formatting and development helper
   - [*] Install Viper, leveled logging, and crypto encoding modules
   - [*] setup project with sample config & env
 
-- [ ] Features/Repositories
-  - [ ] Initial database and add core modules
-  - [ ] Create repository ports
-  - [ ] Add candidate, voter, and election repository
-  - [ ] Refactor the mockup view
+- [*] Features/Repositories
+  - [*] Initial database and add core modules
+  - [*] Create ports and repository
 
 - [ ] Features/Services
   - [ ] Add request and response service model
