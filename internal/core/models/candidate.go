@@ -2,12 +2,11 @@ package models
 
 type Candidate struct {
 	Model
-	Name          string        `json:"name"`
-	Dob           string        `json:"dob"`
-	BioLink       string        `json:"bioLink"`
-	ImageLink     string        `json:"imageLink"`
-	Policy        string        `json:"policy"`
-	CandidateVote CandidateVote `json:"-"`
+	Name      string `json:"name"`
+	Dob       string `json:"dob"`
+	BioLink   string `json:"bioLink"`
+	ImageLink string `json:"imageLink"`
+	Policy    string `json:"policy"`
 }
 
 type CandidateResponse struct {

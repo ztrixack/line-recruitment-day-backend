@@ -116,11 +116,10 @@ pkg                         // library code that's ok to use by external applica
   - [*] Initial database and add core modules
   - [*] Create ports and repository
 
-- [ ] Features/Services
-  - [ ] Add request and response service model
-  - [ ] Create service ports
-  - [ ] Add candidate, voter, and election service
-  - [ ] Refactor services and repositories
+- [*] Features/Services
+  - [*] Create service ports
+  - [*] Create services and coonnect with repositories
+  - [*] Refactor services and repositories
  
 - [ ] Features/RESTful API
   - [ ] Initial fiber and router

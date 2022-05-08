@@ -14,3 +14,10 @@ type Model struct {
 	UpdatedAt time.Time      `json:"-"`
 	DeletedAt gorm.DeletedAt `json:"-" gorm:"index"`
 }
+
+type Response struct {
+	Code    int          `json:"code"`
+	Success bool         `json:"success"`
+	Message string       `json:"message"`
+	Data    *interface{} `json:"data,omitempty"`
+}
