@@ -8,8 +8,7 @@ require (
 	github.com/andybalholm/brotli v1.0.4 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/fasthttp/websocket v1.5.0 // indirect
-	github.com/go-stomp/stomp/v3 v3.0.5 // indirect
-	github.com/gofiber/websocket/v2 v2.0.21 // indirect
+	github.com/gofiber/websocket/v2 v2.0.21
 	github.com/jackc/chunkreader/v2 v2.0.1 // indirect
 	github.com/jackc/pgconn v1.12.1 // indirect
 	github.com/jackc/pgio v1.0.0 // indirect

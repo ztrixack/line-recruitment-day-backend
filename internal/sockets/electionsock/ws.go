@@ -8,14 +8,14 @@ import (
 	"github.com/antoniodipinto/ikisocket"
 )
 
-type brokerWs struct{}
+type socketWs struct{}
 
-func NewWs() brokerWs {
-	return brokerWs{}
+func NewWs() socketWs {
+	return socketWs{}
 }
 
 // Retrieving objects with primary key
-func (b brokerWs) StatusUpdated(data models.ElectionResponse) error {
+func (b socketWs) StatusUpdated(data models.ElectionResponse) error {
 	bytes, err := json.Marshal(data)
 	if err != nil {
 		return err

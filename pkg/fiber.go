@@ -18,7 +18,7 @@ func InitRest() *fiber.App {
 
 	app.Use(requestid.New())
 	app.Use(cors.New(cors.Config{
-		AllowOrigins:     "http://localhost:3000",
+		AllowOrigins:     "*",
 		AllowMethods:     "OPTIONS,GET,POST",
 		AllowHeaders:     "Origin, X-Requested-With, Content-Type, Accept, Authorization",
 		AllowCredentials: true,

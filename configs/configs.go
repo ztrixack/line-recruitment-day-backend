@@ -28,11 +28,10 @@ func Load(name string) {
 
 	if err := viper.ReadInConfig(); err != nil {
 		fmt.Fprintln(os.Stderr, err)
-		os.Exit(1)
 	}
 
 	initConfig()
-	initTimeZone()
+	// initTimeZone()
 }
 
 func initConfig() {
