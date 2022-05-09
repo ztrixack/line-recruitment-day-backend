@@ -32,7 +32,7 @@ func (s Service) GetCandidate() models.Response {
 
 	results := []models.CandidateResponse{}
 
-	for index, candidate := range candidates {
+	for _, candidate := range candidates {
 		result := models.CandidateResponse{}
 		result.Id = strconv.Itoa(int(candidate.Id))
 		result.Name = candidate.Name
@@ -41,9 +41,17 @@ func (s Service) GetCandidate() models.Response {
 		result.ImageLink = candidate.ImageLink
 		result.Policy = candidate.Policy
 
-		if index < len(votes) {
-			result.VotedCount = votes[index].VotedCount
-		} else {
+		found := false
+
+		for _, vote := range votes {
+			if vote.CandidateId == int(candidate.Id) {
+				result.VotedCount = vote.VotedCount
+				found = true
+				break
+			}
+		}
+
+		if !found {
 			s.voteRepo.Create(models.CandidateVote{
 				CandidateId: int(candidate.Id),
 				VotedCount:  0,

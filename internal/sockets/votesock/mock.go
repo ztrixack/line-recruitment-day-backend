@@ -6,16 +6,16 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-type brokerMock struct {
+type socketMock struct {
 	mock.Mock
 }
 
-func NewMock() brokerMock {
-	return brokerMock{}
+func NewMock() socketMock {
+	return socketMock{}
 }
 
 // Get all records
-func (b brokerMock) VoteUpdated(data models.CandidateVoteResponse) error {
+func (b socketMock) VoteUpdated(data models.CandidateVoteResponse) error {
 	args := b.Called(data)
 	if args.Get(0) == nil {
 		return nil

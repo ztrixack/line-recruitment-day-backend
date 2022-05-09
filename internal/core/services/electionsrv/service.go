@@ -48,7 +48,7 @@ func (s Service) GetElectionResult() models.Response {
 		return resp.InternalServerError
 	}
 
-	for index, candidate := range candidates {
+	for _, candidate := range candidates {
 		result := models.ElectionResultResponse{}
 		result.Id = strconv.Itoa(int(candidate.Id))
 		result.Name = candidate.Name
@@ -57,9 +57,23 @@ func (s Service) GetElectionResult() models.Response {
 		result.ImageLink = candidate.ImageLink
 		result.Policy = candidate.Policy
 
-		if index < len(votes) {
-			result.VotedCount = votes[index].VotedCount
+		found := false
+
+		for _, vote := range votes {
+			if vote.CandidateId == int(candidate.Id) {
+				result.VotedCount = vote.VotedCount
+				found = true
+				break
+			}
 		}
+
+		if !found {
+			s.voteRepo.Create(models.CandidateVote{
+				CandidateId: int(candidate.Id),
+				VotedCount:  0,
+			})
+		}
+
 		result.Percentage = fmt.Sprintf("%d%%", result.VotedCount*100/total)
 
 		results = append(results, result)
