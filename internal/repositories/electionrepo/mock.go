@@ -15,7 +15,7 @@ func NewMock() repositoryMock {
 }
 
 // Retrieving objects with primary key
-func (r repositoryMock) FindByID(id int) (*models.Election, error) {
+func (r repositoryMock) FindById(id int) (*models.Election, error) {
 	args := r.Called(id)
 	if args.Get(0) == nil {
 		return nil, args.Error(1)
@@ -24,7 +24,7 @@ func (r repositoryMock) FindByID(id int) (*models.Election, error) {
 }
 
 // Update with primary key
-func (r repositoryMock) UpdateByID(id int, entity models.Json) (int, error) {
+func (r repositoryMock) UpdateById(id int, entity models.Json) (int, error) {
 	args := r.Called(id, entity)
 	return args.Int(0), args.Error(1)
 }

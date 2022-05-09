@@ -3,7 +3,7 @@ package models
 type Voter struct {
 	Model
 	CandidateId int    `json:"candidateId"`
-	NationalId  string `json:"nationalId"`
+	NationalId  string `json:"nationalId" gorm:"unique"`
 }
 
 type CreateVoterData struct {

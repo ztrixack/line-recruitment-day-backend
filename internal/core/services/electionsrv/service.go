@@ -6,7 +6,6 @@ import (
 	"election-service/internal/utils"
 	"election-service/internal/utils/resp"
 	"election-service/pkg"
-	"errors"
 	"fmt"
 	"strconv"
 )
@@ -18,13 +17,14 @@ type Service struct {
 	electionRepo  ports.ElectionRepository
 	candidateRepo ports.CandidateRepository
 	voteRepo      ports.CandidateVoteRepository
+	electionSock  ports.ElectionSocket
 }
 
-func New(electionRepo ports.ElectionRepository, candidateRepo ports.CandidateRepository, voteRepo ports.CandidateVoteRepository) Service {
-	return Service{electionRepo: electionRepo, candidateRepo: candidateRepo, voteRepo: voteRepo}
+func New(electionRepo ports.ElectionRepository, candidateRepo ports.CandidateRepository, voteRepo ports.CandidateVoteRepository, electionSock ports.ElectionSocket) Service {
+	return Service{electionRepo: electionRepo, candidateRepo: candidateRepo, voteRepo: voteRepo, electionSock: electionSock}
 }
 
-func (s Service) GetElection() models.Response {
+func (s Service) GetElectionResult() models.Response {
 	candidates, err := s.candidateRepo.Find()
 	if err != nil {
 		pkg.Error(err, "get all candidate")
@@ -45,7 +45,6 @@ func (s Service) GetElection() models.Response {
 	}
 
 	if total == 0 {
-		pkg.Error(errors.New("no vote"), "no vote")
 		return resp.InternalServerError
 	}
 
@@ -69,6 +68,29 @@ func (s Service) GetElection() models.Response {
 	return resp.OK(results)
 }
 
+func (s Service) GetElection() models.Response {
+	id := ELECTION_ID
+
+	entity, err := s.electionRepo.FindById(id)
+	if err != nil {
+		pkg.Error(err, "update Election by Id: %d", id)
+		return resp.InternalServerError
+	}
+
+	if entity == nil {
+		// return resp.NotFoundError
+		return resp.InternalServerError
+	}
+
+	result := models.ElectionResponse{}
+	if err := utils.JsonFilter(entity, &result); err != nil {
+		pkg.Error(err, "convert voter: %+v", entity)
+		return resp.InternalServerError
+	}
+
+	return resp.OK(models.Json{"status": "ok", "enable": result.Enable, "state": result.State})
+}
+
 func (s Service) UpdateElection(data models.UpdateElectionData) models.Response {
 	id := ELECTION_ID
 
@@ -78,7 +100,7 @@ func (s Service) UpdateElection(data models.UpdateElectionData) models.Response 
 		return resp.InternalServerError
 	}
 
-	count, err := s.electionRepo.UpdateByID(id, entity)
+	count, err := s.electionRepo.UpdateById(id, entity)
 	if err != nil {
 		pkg.Error(err, "update Election by Id: %d data: %+v", id, data)
 		return resp.InternalServerError
@@ -88,5 +110,13 @@ func (s Service) UpdateElection(data models.UpdateElectionData) models.Response 
 		return resp.NotFoundError
 	}
 
-	return resp.NoContent
+	response := models.ElectionResponse{
+		Status: "ok",
+		Enable: data.Enable,
+		State:  data.State,
+	}
+
+	s.electionSock.StatusUpdated(response)
+
+	return resp.OK(models.Json{"status": "ok", "enable": data.Enable})
 }

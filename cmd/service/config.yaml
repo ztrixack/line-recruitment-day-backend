@@ -10,5 +10,11 @@ database:
   port: 5432
   username: "guest"
   password: "guest"
-  database: "sqldb"
+  database: "postgres"
   sslmode: "disable"
+
+server:
+  driver: "fiber"
+  host: "127.0.0.1"
+  port: 8000
+  prefork: false

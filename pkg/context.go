@@ -2,6 +2,7 @@ package pkg
 
 import (
 	"context"
+	"election-service/configs"
 	"fmt"
 	"os"
 	"os/signal"
@@ -34,6 +35,7 @@ func Started() {
 
 	elapsed := time.Since(startTime)
 	Info("OO", "Service started setup_time=%v", elapsed)
+	Info("OO", "Service listening at: %v", configs.Server.Port)
 }
 
 func Exit(err error) {

@@ -52,6 +52,13 @@ func initConfig() {
 		Database: viper.GetString("database.database"),
 		SSLMode:  viper.GetString("database.sslmode"),
 	}
+
+	Server = serverConfig{
+		Driver:  viper.GetString("server.driver"),
+		Host:    viper.GetString("server.host"),
+		Port:    viper.GetInt("server.port"),
+		Prefork: viper.GetBool("server.prefork"),
+	}
 }
 
 func initTimeZone() {

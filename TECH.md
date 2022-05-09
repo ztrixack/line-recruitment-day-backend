@@ -46,28 +46,88 @@ score from the server-side and sum up who is the new mayor.
 
 The backend architecture for LINE TOWN election project
 - Written frontend in Go
-- Follow Hexagonal Architecture 
+- Uses Hexagonal Architecture in structure based
+- Uses Rest by fiber v2 to talk to frontend
+- Stores data in PostgreSQL
+- Uses WebSocket to stream to the frontend directly
 
 <!-- FOLDER STRUCTURE -->
-cmd                         // main applications for this project
-└── service                 // main application 
-configs                     // configuration file templates or default configs
-internal                    // private application and library code.
-├── core                    // all the core components (services, models and ports)
-│   ├── models              // the domain models
-│   ├── ports               // the interfaces definition used to communicate with actors
-│   └── services            // the entry points to the core and each one of them implements the corresponding port
-├── handlers                // the driver adapters
-├── repositories            // the driven adapters
-├── routes                  // the connecting path between handlers and endpoints 
-mocks                       // mockup data for test
-pkg                         // library code that's ok to use by external applications
+server
+├── .vscode                     // debug config via VSCode
+├── cmd                         // main applications for this project
+│   └── service                 // the application
+├── configs                     // configuration file templates or default configs
+├── internal                    // private application and library code.
+│   ├── core                    // all the core components (services, models and ports)
+│   │   ├── models              // the domain models
+│   │   ├── ports               // the interfaces definition used to communicate with actors
+│   │   └── services            // the entry points to the core and each one of them implements the corresponding port
+|   |       ├── candidatesrv    // the business logic core for Candidate domain
+|   |       ├── electionsrv     // the business logic core for Election domain
+|   |       ├── votesrv         // the business logic core for Vote domain
+│   ├── handlers                // the driver adapters
+|   |   ├── candidatehdl        // the Candidate domain adapter (REST)
+|   |   ├── electionhdl         // the Election domain adapter (REST & WS)
+|   |   └── votehdl             // the Vote domain adapter (REST & WS)
+│   ├── repositories            // the driven adapters
+|   |   ├── candidaterepo       // the Candidate repository
+|   |   ├── candidatevoterepo   // the Candidate Vote repository
+|   |   ├── electionrepo        // the Election repository
+|   |   └── voterrepo           // the Voter repository
+│   ├── routes                  // the connecting path between handlers and endpoints 
+│   ├── sockets                 // the driven events
+|   |   ├── electionsock        // the Election socket driven
+|   |   └── votersock           // the Voter socket driven
+│   └── utils                   // utilities code 
+|       ├── crypto              // bcrypt for hash password
+|       ├── errs                // Error code in service
+|       └── resp                // HTTP response code to send to client
+├── mocks                       // mockup data for test
+└── pkg                         // library code that's ok to use by external applications
+    └── ws                      // the web socket hub
+
+
+| Router | Driver       | Core/Service | Driven            |
+| ------ | ------------ | ------------ | ----------------- |
+|        | candidatehdl | candidatesrv | candidaterepo     |
+|        | electionhdl  | electionsrv  | candidatevoterepo |
+|        | votehdl      | votesrv      | electionrepo      |
+|        |              |              | voterepo          |
+|        |              |              | electionsock      |
+|        |              |              | votersock         |
+
+### REST API
+| Parameter  | Medhod | Path                 | Driver (fiber) | Core/Service | Driven (gorm)     |
+| ---------- | ------ | -------------------- | -------------- | ------------ | ----------------- |
+| candidates | GET    | /api/candidates      | candidatehdl   | candidatesrv | candidaterepo     |
+|            |        |                      |                |              | candidatevoterepo |
+| ---------- | ------ | -------------------- | -------------- | ------------ | ----------------- |
+| election   | GET    | /api/election/result | electionhdl    | electionsrv  | candidaterepo     |
+|            |        |                      |                |              | candidatevoterepo |
+| ---------- | ------ | -------------------- | -------------- | ------------ | ----------------- |
+| election   | GET    | /api/election/toggle | electionhdl    | electionsrv  | electionrepo      |
+| ---------- | ------ | -------------------- | -------------- | ------------ | ----------------- |
+| election   | POST   | /api/election/toggle | electionhdl    |              | electionrepo      |
+|            |        |                      |                |              | electionsock      |
+| ---------- | ------ | -------------------- | -------------- | ------------ | ----------------- |
+| vote       | POST   | /api/vote            | votehdl        |              | candidatevoterepo |
+|            |        |                      |                |              | voterrepo         |
+|            |        |                      |                |              | electionrepo      |
+|            |        |                      |                |              | votesock          |
+| ---------- | ------ | -------------------- | -------------- | ------------ | ----------------- |
+| vote       | POST   | /api/vote/status     | votehdl        |              | voterrepo         |
+
+### Real-Time Streaan on WebSocket
+| Parameter       | Path             | Description                        |
+| --------------- | ---------------- | ---------------------------------- |
+| election.status | /ws/election/:id | Get election status when it change |
+| vote.count      | /ws/vote/:id     | Get vote status when it update     |
 
 <!-- DATABASE -->
 ## Eloquent ORM Relationships
 ### Entity Database
 
-| Key | Entity        |
+| Key | Election      |
 | --- | ------------- |
 | PK  | id: int       |
 |     | enable: bool  |
@@ -88,11 +148,10 @@ pkg                         // library code that's ok to use by external applica
 | FK  | candidateId: int   |
 |     | nationalId: string |
 
-| Key | Candidate Vote     |
-| --- | ------------------ |
-| PK  | id: int            |
-| FK  | candidateId: int   |
-|     | votedCount: string |
+| Key    | Candidate Vote     |
+| ------ | ------------------ |
+| PK, FK | candidateId: int   |
+|        | votedCount: string |
 
 ### Entity Relationship
 
@@ -121,19 +180,16 @@ pkg                         // library code that's ok to use by external applica
   - [*] Create services and coonnect with repositories
   - [*] Refactor services and repositories
  
-- [ ] Features/RESTful API
-  - [ ] Initial fiber and router
-  - [ ] Add restful endpoint handler for all services
-  - [ ] Connect with services and repositories
-
-- [ ] Features/WebSocket and STOMP
-  - [ ] Init websocket and key binding
-  - [ ] Add socket handler for stream vote service
-  - [ ] Refactor code
+- [*] Features/RESTful API & WebSocket
+  - [*] Initial fiber and router
+  - [*] Add restful endpoint handler for all services
+  - [*] Connect with services and repositories
+  - [*] Init websocket and key binding
+  - [*] Add socket handler for stream vote service
+  - [*] Refactor code and edit TECH.md
 
 - [ ] Features/Integration
   - [ ] Add integration test
-  - [ ] Complete the system and connect with frontend
   - [ ] Add initial data file in database
   - [ ] Add reset method
   - [ ] Create dockerfile and docker-compose

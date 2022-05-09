@@ -5,8 +5,8 @@ import (
 )
 
 type ElectionRepository interface {
-	FindByID(int) (*models.Election, error)
-	UpdateByID(int, models.Json) (int, error)
+	FindById(int) (*models.Election, error)
+	UpdateById(int, models.Json) (int, error)
 }
 
 type CandidateRepository interface {
@@ -16,12 +16,11 @@ type CandidateRepository interface {
 type CandidateVoteRepository interface {
 	Create(models.CandidateVote) (*models.CandidateVote, error)
 	Find() ([]models.CandidateVote, error)
-	FindByID(int) (*models.CandidateVote, error)
-	UpdateByID(int, models.Json) (int, error)
+	FindByCandidateId(int) (*models.CandidateVote, error)
+	IncreaseByCandidateId(int) (int, error)
 }
 
 type VoterRepository interface {
 	Create(models.Voter) (*models.Voter, error)
-	FindByID(int) (*models.Voter, error)
-	UpdateByID(int, models.Json) (int, error)
+	FindByNationId(string) (*models.Voter, error)
 }
