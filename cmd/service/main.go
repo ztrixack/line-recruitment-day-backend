@@ -5,17 +5,17 @@ import (
 	"election-service/internal/core/models"
 	"election-service/internal/core/services/candidatesrv"
 	"election-service/internal/core/services/electionsrv"
-	"election-service/internal/core/services/votersrv"
+	"election-service/internal/core/services/votesrv"
 	"election-service/internal/handlers/candidatehdl"
 	"election-service/internal/handlers/electionhdl"
-	"election-service/internal/handlers/voterhdl"
+	"election-service/internal/handlers/votehdl"
 	"election-service/internal/repositories/candidaterepo"
 	"election-service/internal/repositories/candidatevoterepo"
 	"election-service/internal/repositories/electionrepo"
 	"election-service/internal/repositories/voterrepo"
 	"election-service/internal/routes"
-	"election-service/internal/sockets/electionsck"
-	"election-service/internal/sockets/votesck"
+	"election-service/internal/sockets/electionsock"
+	"election-service/internal/sockets/votesock"
 	"election-service/pkg"
 	"fmt"
 	"math/rand"
@@ -37,16 +37,16 @@ func main() {
 	candidateVoteRepository := candidatevoterepo.NewSql(db)
 	voterRepository := voterrepo.NewSql(db)
 
-	electionSocket := electionsck.NewWs()
-	voteSocket := votesck.NewWs()
+	electionSocket := electionsock.NewWs()
+	voteSocket := votesock.NewWs()
 
 	electionService := electionsrv.New(electionRepository, candidateRepository, candidateVoteRepository, electionSocket)
 	candidateService := candidatesrv.New(candidateRepository, candidateVoteRepository)
-	voterService := votersrv.New(voterRepository, electionRepository, candidateVoteRepository, voteSocket)
+	voterService := votesrv.New(voterRepository, electionRepository, candidateVoteRepository, voteSocket)
 
 	electionHandler := electionhdl.NewRest(electionService)
 	candidateHandler := candidatehdl.NewRest(candidateService)
-	voterHandler := voterhdl.NewRest(voterService)
+	voterHandler := votehdl.NewRest(voterService)
 
 	routes.ElectionEndpoints(rest, electionHandler)
 	routes.CandidateEndpoints(rest, candidateHandler)

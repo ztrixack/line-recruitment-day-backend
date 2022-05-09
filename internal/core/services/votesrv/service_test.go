@@ -1,11 +1,12 @@
-package votersrv_test
+package votesrv_test
 
 import (
 	"election-service/internal/core/models"
-	"election-service/internal/core/services/votersrv"
+	"election-service/internal/core/services/votesrv"
 	"election-service/internal/repositories/candidatevoterepo"
 	"election-service/internal/repositories/electionrepo"
 	"election-service/internal/repositories/voterrepo"
+	"election-service/internal/sockets/votesock"
 	"election-service/internal/utils/resp"
 	"election-service/mocks"
 	"election-service/pkg"
@@ -29,9 +30,10 @@ func TestService_CreateVoter(t *testing.T) {
 		voterRepo := voterrepo.NewMock()
 		electionRepo := electionrepo.NewMock()
 		candidateVoteRepo := candidatevoterepo.NewMock()
+		voteSock := votesock.NewMock()
 		voterRepo.On("Create", mocks.NewVoter).Return(&mocks.Voter, nil)
 		voterRepo.On("Create", mocks.NilVoter).Return(nil, errors.New(""))
-		service := votersrv.New(voterRepo, electionRepo, candidateVoteRepo)
+		service := votesrv.New(voterRepo, electionRepo, candidateVoteRepo, voteSock)
 
 		cases := []testcase{
 			{name: "Success", request: models.CreateVoterData{CandidateId: 1, NationalId: "1234567890123"}, expected: resp.Created(nil)},
@@ -62,10 +64,11 @@ func TestService_GetVoter(t *testing.T) {
 		voterRepo := voterrepo.NewMock()
 		electionRepo := electionrepo.NewMock()
 		candidateVoteRepo := candidatevoterepo.NewMock()
+		voteSock := votesock.NewMock()
 		voterRepo.On("FindByNationId", "1").Return(&mocks.Voter, nil)
 		voterRepo.On("FindByNationId", "2").Return(nil, errors.New(""))
 		voterRepo.On("FindByNationId", "3").Return(nil, nil)
-		service := votersrv.New(voterRepo, electionRepo, candidateVoteRepo)
+		service := votesrv.New(voterRepo, electionRepo, candidateVoteRepo, voteSock)
 
 		cases := []testcase{
 			{name: "Success", request: "1", expected: resp.OK(nil)},

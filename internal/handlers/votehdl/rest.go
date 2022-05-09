@@ -1,8 +1,8 @@
-package voterhdl
+package votehdl
 
 import (
 	"election-service/internal/core/models"
-	"election-service/internal/core/services/votersrv"
+	"election-service/internal/core/services/votesrv"
 	"election-service/internal/utils/resp"
 	"election-service/pkg"
 
@@ -15,10 +15,10 @@ type HandlerRest interface {
 }
 
 type handlerRest struct {
-	voterSrv votersrv.Service
+	voterSrv votesrv.Service
 }
 
-func NewRest(voterSrv votersrv.Service) handlerRest {
+func NewRest(voterSrv votesrv.Service) handlerRest {
 	return handlerRest{voterSrv: voterSrv}
 }
 

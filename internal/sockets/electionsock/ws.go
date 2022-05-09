@@ -1,4 +1,4 @@
-package electionsck
+package electionsock
 
 import (
 	"election-service/internal/core/models"

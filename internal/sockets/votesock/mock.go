@@ -1,4 +1,4 @@
-package electionsck
+package votesock
 
 import (
 	"election-service/internal/core/models"
@@ -15,7 +15,7 @@ func NewMock() brokerMock {
 }
 
 // Get all records
-func (b brokerMock) StatusUpdated(data models.ElectionResponse) error {
+func (b brokerMock) VoteUpdated(data models.CandidateVoteResponse) error {
 	args := b.Called(data)
 	if args.Get(0) == nil {
 		return nil

@@ -6,7 +6,7 @@ import (
 	"election-service/internal/repositories/candidaterepo"
 	"election-service/internal/repositories/candidatevoterepo"
 	"election-service/internal/repositories/electionrepo"
-	"election-service/internal/sockets/electionsck"
+	"election-service/internal/sockets/electionsock"
 	"election-service/internal/utils/resp"
 	"election-service/mocks"
 	"election-service/pkg"
@@ -29,7 +29,7 @@ func TestService_GetElectionResult(t *testing.T) {
 		electionRepo := electionrepo.NewMock()
 		candidateRepo := candidaterepo.NewMock()
 		candidateVoteRepo := candidatevoterepo.NewMock()
-		electionSock := electionsck.NewMock()
+		electionSock := electionsock.NewMock()
 		electionRepo.On("FindById", 1).Return(&mocks.SolicitElection, nil)
 		candidateRepo.On("Find").Return(mocks.Candidates, nil)
 		candidateVoteRepo.On("Find").Return(mocks.CandidateVotes, nil)
@@ -47,7 +47,7 @@ func TestService_GetElectionResult(t *testing.T) {
 		electionRepo := electionrepo.NewMock()
 		candidateRepo := candidaterepo.NewMock()
 		candidateVoteRepo := candidatevoterepo.NewMock()
-		electionSock := electionsck.NewMock()
+		electionSock := electionsock.NewMock()
 		electionRepo.On("FindById", 1).Return(nil, errors.New(""))
 		candidateRepo.On("Find").Return(nil, errors.New(""))
 		candidateVoteRepo.On("Find").Return(mocks.CandidateVotes, nil)
@@ -65,7 +65,7 @@ func TestService_GetElectionResult(t *testing.T) {
 		electionRepo := electionrepo.NewMock()
 		candidateRepo := candidaterepo.NewMock()
 		candidateVoteRepo := candidatevoterepo.NewMock()
-		electionSock := electionsck.NewMock()
+		electionSock := electionsock.NewMock()
 		electionRepo.On("FindById", 1).Return(nil, nil)
 		candidateRepo.On("Find").Return(mocks.Candidates, nil)
 		candidateVoteRepo.On("Find").Return(nil, errors.New(""))
@@ -83,7 +83,7 @@ func TestService_GetElectionResult(t *testing.T) {
 		electionRepo := electionrepo.NewMock()
 		candidateRepo := candidaterepo.NewMock()
 		candidateVoteRepo := candidatevoterepo.NewMock()
-		electionSock := electionsck.NewMock()
+		electionSock := electionsock.NewMock()
 		electionRepo.On("FindById", 1).Return(nil, nil)
 		candidateRepo.On("Find").Return(nil, nil)
 		candidateVoteRepo.On("Find").Return(nil, nil)
@@ -112,7 +112,7 @@ func TestService_GetElection(t *testing.T) {
 		electionRepo := electionrepo.NewMock()
 		candidateRepo := candidaterepo.NewMock()
 		candidateVoteRepo := candidatevoterepo.NewMock()
-		electionSock := electionsck.NewMock()
+		electionSock := electionsock.NewMock()
 		electionRepo.On("FindById", 1).Return(&mocks.SolicitElection, nil)
 		service := electionsrv.New(electionRepo, candidateRepo, candidateVoteRepo, electionSock)
 
@@ -128,7 +128,7 @@ func TestService_GetElection(t *testing.T) {
 		electionRepo := electionrepo.NewMock()
 		candidateRepo := candidaterepo.NewMock()
 		candidateVoteRepo := candidatevoterepo.NewMock()
-		electionSock := electionsck.NewMock()
+		electionSock := electionsock.NewMock()
 		electionRepo.On("FindById", 1).Return(nil, nil)
 		service := electionsrv.New(electionRepo, candidateRepo, candidateVoteRepo, electionSock)
 
@@ -144,7 +144,7 @@ func TestService_GetElection(t *testing.T) {
 		electionRepo := electionrepo.NewMock()
 		candidateRepo := candidaterepo.NewMock()
 		candidateVoteRepo := candidatevoterepo.NewMock()
-		electionSock := electionsck.NewMock()
+		electionSock := electionsock.NewMock()
 		electionRepo.On("FindById", 1).Return(nil, errors.New(""))
 		service := electionsrv.New(electionRepo, candidateRepo, candidateVoteRepo, electionSock)
 		expected := resp.InternalServerError
@@ -171,7 +171,7 @@ func TestService_UpdateElection(t *testing.T) {
 		electionRepo := electionrepo.NewMock()
 		candidateRepo := candidaterepo.NewMock()
 		candidateVoteRepo := candidatevoterepo.NewMock()
-		electionSock := electionsck.NewMock()
+		electionSock := electionsock.NewMock()
 		electionRepo.On("UpdateById", 1, map[string]interface{}{"enable": true, "state": "voting"}).Return(1, nil)
 		electionRepo.On("UpdateById", 1, map[string]interface{}{"enable": false, "state": "closed"}).Return(1, nil)
 		electionRepo.On("UpdateById", 1, map[string]interface{}{"enable": false, "state": ""}).Return(0, errors.New(""))

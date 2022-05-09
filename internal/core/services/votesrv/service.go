@@ -1,4 +1,4 @@
-package votersrv
+package votesrv
 
 import (
 	"election-service/internal/core/models"
@@ -21,7 +21,7 @@ func New(voterRepo ports.VoterRepository, electionRepo ports.ElectionRepository,
 }
 
 func (s Service) CreateVoter(data models.CreateVoterData) models.Response {
-	entity := models.Voter{}
+	var entity models.Voter
 	if err := utils.JsonFilter(data, &entity); err != nil {
 		pkg.Error(err, "convert voter: %+v", data)
 		return resp.InternalServerError
