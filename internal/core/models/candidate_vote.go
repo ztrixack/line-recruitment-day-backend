@@ -2,7 +2,7 @@ package models
 
 type CandidateVote struct {
 	Model
-	CandidateId int `json:"candidateId"`
+	CandidateId int `json:"candidateId" gorm:"unique"`
 	VotedCount  int `json:"votedCount"`
 }
 

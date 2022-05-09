@@ -6,16 +6,16 @@ import (
 	"gorm.io/gorm"
 )
 
-type repositorySQL struct {
+type repositorySql struct {
 	db *gorm.DB
 }
 
-func NewSQL(db *gorm.DB) repositorySQL {
-	return repositorySQL{db: db}
+func NewSql(db *gorm.DB) repositorySql {
+	return repositorySql{db: db}
 }
 
 // Create Record
-func (r repositorySQL) Create(entity models.CandidateVote) (*models.CandidateVote, error) {
+func (r repositorySql) Create(entity models.CandidateVote) (*models.CandidateVote, error) {
 	tx := r.db.Create(&entity)
 	if tx.Error != nil {
 		return nil, tx.Error
@@ -25,11 +25,14 @@ func (r repositorySQL) Create(entity models.CandidateVote) (*models.CandidateVot
 }
 
 // Get all records
-func (r repositorySQL) Find() ([]models.CandidateVote, error) {
+func (r repositorySql) Find() ([]models.CandidateVote, error) {
 	entities := []models.CandidateVote{}
 
 	tx := r.db.Find(&entities)
 	if tx.Error != nil {
+		if tx.Error == gorm.ErrRecordNotFound {
+			return nil, nil
+		}
 		return nil, tx.Error
 	}
 
@@ -37,10 +40,13 @@ func (r repositorySQL) Find() ([]models.CandidateVote, error) {
 }
 
 // Retrieving objects with primary key
-func (r repositorySQL) FindByID(id int) (*models.CandidateVote, error) {
+func (r repositorySql) FindById(id int) (*models.CandidateVote, error) {
 	var entity models.CandidateVote
 	tx := r.db.Find(&entity, id)
 	if tx.Error != nil {
+		if tx.Error == gorm.ErrRecordNotFound {
+			return nil, nil
+		}
 		return nil, tx.Error
 	}
 
@@ -52,9 +58,12 @@ func (r repositorySQL) FindByID(id int) (*models.CandidateVote, error) {
 }
 
 // Update with primary key
-func (r repositorySQL) UpdateByID(id int, entity models.Json) (int, error) {
-	tx := r.db.Model(&models.CandidateVote{}).Where("id = ?", id).Updates(&entity)
+func (r repositorySql) IncreaseById(id int) (int, error) {
+	tx := r.db.Model(&models.CandidateVote{}).Where("id = ?", id).UpdateColumn("voted_count", gorm.Expr("voted_count + ?", 1))
 	if tx.Error != nil {
+		if tx.Error == gorm.ErrRecordNotFound {
+			return 0, nil
+		}
 		return int(tx.RowsAffected), tx.Error
 	}
 

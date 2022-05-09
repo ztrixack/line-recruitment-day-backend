@@ -24,7 +24,7 @@ func (r repositoryMock) Create(entity models.Voter) (*models.Voter, error) {
 }
 
 // Retrieving objects with primary key
-func (r repositoryMock) FindByID(id int) (*models.Voter, error) {
+func (r repositoryMock) FindByNationId(id string) (*models.Voter, error) {
 	args := r.Called(id)
 	if args.Get(0) == nil {
 		return nil, args.Error(1)
@@ -33,7 +33,7 @@ func (r repositoryMock) FindByID(id int) (*models.Voter, error) {
 }
 
 // Update with primary key
-func (r repositoryMock) UpdateByID(id int, entity models.Json) (int, error) {
+func (r repositoryMock) UpdateById(id int, entity models.Json) (int, error) {
 	args := r.Called(id, entity)
 	return args.Int(0), args.Error(1)
 }

@@ -9,7 +9,7 @@ import (
 type Response = models.Response
 
 func Send(c *fiber.Ctx, resp Response) error {
-	return c.Status(resp.Code).JSON(resp)
+	return c.Status(resp.Code).JSON(resp.Data)
 }
 
 func Created(data interface{}) Response {

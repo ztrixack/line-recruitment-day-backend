@@ -5,21 +5,17 @@ import (
 )
 
 type ElectionService interface {
+	GetElectionResult() models.Response
 	GetElection() models.Response
 	UpdateElection(models.UpdateElectionData) models.Response
 }
 
 type CandidateService interface {
 	GetCandidate() models.Response
-}
-
-type CandidateVoteService interface {
-	CreateCandidateVote(models.CreateCandidateVoteData) models.Response
-	GetCandidateVote(int) models.Response
-	UpdateCandidateVote(int, models.UpdateCandidateVoteData) models.Response
+	GetCandidateVoteById(int) models.Response
 }
 
 type VoterService interface {
-	CreateVoter(int, models.CreateVoterData) models.Response
+	CreateVoter(models.CreateVoterData) models.Response
 	GetVoter(int) models.Response
 }

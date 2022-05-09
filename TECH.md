@@ -121,12 +121,10 @@ pkg                         // library code that's ok to use by external applica
   - [*] Create services and coonnect with repositories
   - [*] Refactor services and repositories
  
-- [ ] Features/RESTful API
-  - [ ] Initial fiber and router
-  - [ ] Add restful endpoint handler for all services
-  - [ ] Connect with services and repositories
-
-- [ ] Features/WebSocket and STOMP
+- [ ] Features/RESTful API & WebSocket and STOMP
+  - [*] Initial fiber and router
+  - [*] Add restful endpoint handler for all services
+  - [*] Connect with services and repositories
   - [ ] Init websocket and key binding
   - [ ] Add socket handler for stream vote service
   - [ ] Refactor code
