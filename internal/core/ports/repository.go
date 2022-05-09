@@ -16,8 +16,8 @@ type CandidateRepository interface {
 type CandidateVoteRepository interface {
 	Create(models.CandidateVote) (*models.CandidateVote, error)
 	Find() ([]models.CandidateVote, error)
-	FindById(int) (*models.CandidateVote, error)
-	IncreaseById(int) (int, error)
+	FindByCandidateId(int) (*models.CandidateVote, error)
+	IncreaseByCandidateId(int) (int, error)
 }
 
 type VoterRepository interface {

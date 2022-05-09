@@ -6,6 +6,7 @@ import (
 	"election-service/internal/repositories/candidaterepo"
 	"election-service/internal/repositories/candidatevoterepo"
 	"election-service/internal/repositories/electionrepo"
+	"election-service/internal/sockets/electionsck"
 	"election-service/internal/utils/resp"
 	"election-service/mocks"
 	"election-service/pkg"
@@ -28,10 +29,11 @@ func TestService_GetElectionResult(t *testing.T) {
 		electionRepo := electionrepo.NewMock()
 		candidateRepo := candidaterepo.NewMock()
 		candidateVoteRepo := candidatevoterepo.NewMock()
+		electionSock := electionsck.NewMock()
 		electionRepo.On("FindById", 1).Return(&mocks.SolicitElection, nil)
 		candidateRepo.On("Find").Return(mocks.Candidates, nil)
 		candidateVoteRepo.On("Find").Return(mocks.CandidateVotes, nil)
-		service := electionsrv.New(electionRepo, candidateRepo, candidateVoteRepo)
+		service := electionsrv.New(electionRepo, candidateRepo, candidateVoteRepo, electionSock)
 		expected := resp.OK(nil)
 
 		t.Run("Success", func(t *testing.T) {
@@ -45,10 +47,11 @@ func TestService_GetElectionResult(t *testing.T) {
 		electionRepo := electionrepo.NewMock()
 		candidateRepo := candidaterepo.NewMock()
 		candidateVoteRepo := candidatevoterepo.NewMock()
+		electionSock := electionsck.NewMock()
 		electionRepo.On("FindById", 1).Return(nil, errors.New(""))
 		candidateRepo.On("Find").Return(nil, errors.New(""))
 		candidateVoteRepo.On("Find").Return(mocks.CandidateVotes, nil)
-		service := electionsrv.New(electionRepo, candidateRepo, candidateVoteRepo)
+		service := electionsrv.New(electionRepo, candidateRepo, candidateVoteRepo, electionSock)
 		expected := resp.InternalServerError
 
 		t.Run("Repo Error", func(t *testing.T) {
@@ -62,10 +65,11 @@ func TestService_GetElectionResult(t *testing.T) {
 		electionRepo := electionrepo.NewMock()
 		candidateRepo := candidaterepo.NewMock()
 		candidateVoteRepo := candidatevoterepo.NewMock()
+		electionSock := electionsck.NewMock()
 		electionRepo.On("FindById", 1).Return(nil, nil)
 		candidateRepo.On("Find").Return(mocks.Candidates, nil)
 		candidateVoteRepo.On("Find").Return(nil, errors.New(""))
-		service := electionsrv.New(electionRepo, candidateRepo, candidateVoteRepo)
+		service := electionsrv.New(electionRepo, candidateRepo, candidateVoteRepo, electionSock)
 		expected := resp.InternalServerError
 
 		t.Run("Not Found Election", func(t *testing.T) {
@@ -79,10 +83,11 @@ func TestService_GetElectionResult(t *testing.T) {
 		electionRepo := electionrepo.NewMock()
 		candidateRepo := candidaterepo.NewMock()
 		candidateVoteRepo := candidatevoterepo.NewMock()
+		electionSock := electionsck.NewMock()
 		electionRepo.On("FindById", 1).Return(nil, nil)
 		candidateRepo.On("Find").Return(nil, nil)
 		candidateVoteRepo.On("Find").Return(nil, nil)
-		service := electionsrv.New(electionRepo, candidateRepo, candidateVoteRepo)
+		service := electionsrv.New(electionRepo, candidateRepo, candidateVoteRepo, electionSock)
 		expected := resp.InternalServerError
 
 		t.Run("Not Found Election", func(t *testing.T) {
@@ -107,8 +112,9 @@ func TestService_GetElection(t *testing.T) {
 		electionRepo := electionrepo.NewMock()
 		candidateRepo := candidaterepo.NewMock()
 		candidateVoteRepo := candidatevoterepo.NewMock()
+		electionSock := electionsck.NewMock()
 		electionRepo.On("FindById", 1).Return(&mocks.SolicitElection, nil)
-		service := electionsrv.New(electionRepo, candidateRepo, candidateVoteRepo)
+		service := electionsrv.New(electionRepo, candidateRepo, candidateVoteRepo, electionSock)
 
 		expected := resp.OK(nil)
 
@@ -122,8 +128,9 @@ func TestService_GetElection(t *testing.T) {
 		electionRepo := electionrepo.NewMock()
 		candidateRepo := candidaterepo.NewMock()
 		candidateVoteRepo := candidatevoterepo.NewMock()
+		electionSock := electionsck.NewMock()
 		electionRepo.On("FindById", 1).Return(nil, nil)
-		service := electionsrv.New(electionRepo, candidateRepo, candidateVoteRepo)
+		service := electionsrv.New(electionRepo, candidateRepo, candidateVoteRepo, electionSock)
 
 		expected := resp.NotFoundError
 
@@ -137,8 +144,9 @@ func TestService_GetElection(t *testing.T) {
 		electionRepo := electionrepo.NewMock()
 		candidateRepo := candidaterepo.NewMock()
 		candidateVoteRepo := candidatevoterepo.NewMock()
+		electionSock := electionsck.NewMock()
 		electionRepo.On("FindById", 1).Return(nil, errors.New(""))
-		service := electionsrv.New(electionRepo, candidateRepo, candidateVoteRepo)
+		service := electionsrv.New(electionRepo, candidateRepo, candidateVoteRepo, electionSock)
 		expected := resp.InternalServerError
 
 		t.Run("Repo Error", func(t *testing.T) {
@@ -163,13 +171,14 @@ func TestService_UpdateElection(t *testing.T) {
 		electionRepo := electionrepo.NewMock()
 		candidateRepo := candidaterepo.NewMock()
 		candidateVoteRepo := candidatevoterepo.NewMock()
+		electionSock := electionsck.NewMock()
 		electionRepo.On("UpdateById", 1, map[string]interface{}{"enable": true, "state": "voting"}).Return(1, nil)
 		electionRepo.On("UpdateById", 1, map[string]interface{}{"enable": false, "state": "closed"}).Return(1, nil)
 		electionRepo.On("UpdateById", 1, map[string]interface{}{"enable": false, "state": ""}).Return(0, errors.New(""))
-		electionRepo.On("UpdateById", 1, map[string]interface{}{"enable": true, "state": ""}).Return(0, nil)
+		electionRepo.On("UpdateByID", 1, map[string]interface{}{"enable": true, "state": ""}).Return(0, nil)
 		candidateRepo.On("Find").Return(mocks.Candidates, nil)
 		candidateVoteRepo.On("Find").Return(mocks.CandidateVotes, nil)
-		service := electionsrv.New(electionRepo, candidateRepo, candidateVoteRepo)
+		service := electionsrv.New(electionRepo, candidateRepo, candidateVoteRepo, electionSock)
 
 		cases := []testcase{
 			{name: "Success", request: mocks.UpdateToVoting, expected: resp.NoContent},

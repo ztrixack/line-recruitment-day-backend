@@ -125,13 +125,12 @@ pkg                         // library code that's ok to use by external applica
   - [*] Initial fiber and router
   - [*] Add restful endpoint handler for all services
   - [*] Connect with services and repositories
-  - [ ] Init websocket and key binding
-  - [ ] Add socket handler for stream vote service
+  - [*] Init websocket and key binding
+  - [*] Add socket handler for stream vote service
   - [ ] Refactor code
 
 - [ ] Features/Integration
   - [ ] Add integration test
-  - [ ] Complete the system and connect with frontend
   - [ ] Add initial data file in database
   - [ ] Add reset method
   - [ ] Create dockerfile and docker-compose

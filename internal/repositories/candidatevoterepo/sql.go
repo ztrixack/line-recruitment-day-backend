@@ -40,9 +40,9 @@ func (r repositorySql) Find() ([]models.CandidateVote, error) {
 }
 
 // Retrieving objects with primary key
-func (r repositorySql) FindById(id int) (*models.CandidateVote, error) {
+func (r repositorySql) FindByCandidateId(candidateId int) (*models.CandidateVote, error) {
 	var entity models.CandidateVote
-	tx := r.db.Find(&entity, id)
+	tx := r.db.Where("candidate_id = ?", candidateId).Find(&entity)
 	if tx.Error != nil {
 		if tx.Error == gorm.ErrRecordNotFound {
 			return nil, nil
@@ -58,8 +58,8 @@ func (r repositorySql) FindById(id int) (*models.CandidateVote, error) {
 }
 
 // Update with primary key
-func (r repositorySql) IncreaseById(id int) (int, error) {
-	tx := r.db.Model(&models.CandidateVote{}).Where("id = ?", id).UpdateColumn("voted_count", gorm.Expr("voted_count + ?", 1))
+func (r repositorySql) IncreaseByCandidateId(candidateId int) (int, error) {
+	tx := r.db.Model(&models.CandidateVote{}).Where("candidate_id = ?", candidateId).UpdateColumn("voted_count", gorm.Expr("voted_count + ?", 1))
 	if tx.Error != nil {
 		if tx.Error == gorm.ErrRecordNotFound {
 			return 0, nil

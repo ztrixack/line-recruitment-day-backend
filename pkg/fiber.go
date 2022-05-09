@@ -7,6 +7,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/requestid"
 
 	"election-service/configs"
+	"election-service/pkg/ws"
 )
 
 func InitRest() *fiber.App {
@@ -29,4 +30,12 @@ func InitRest() *fiber.App {
 	}))
 
 	return app
+}
+
+func InitWsHub() *ws.Hub {
+	hub := ws.Hub{
+		Election: make(map[string]string),
+		Vote:     make(map[string]string),
+	}
+	return &hub
 }

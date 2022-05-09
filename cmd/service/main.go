@@ -14,6 +14,8 @@ import (
 	"election-service/internal/repositories/electionrepo"
 	"election-service/internal/repositories/voterrepo"
 	"election-service/internal/routes"
+	"election-service/internal/sockets/electionsck"
+	"election-service/internal/sockets/votesck"
 	"election-service/pkg"
 	"fmt"
 	"math/rand"
@@ -26,6 +28,8 @@ func main() {
 
 	db := pkg.InitDB()
 	rest := pkg.InitRest()
+	wsHub := pkg.InitWsHub()
+
 	db.AutoMigrate(models.CandidateVote{}, models.Candidate{}, models.Election{}, models.Voter{})
 
 	electionRepository := electionrepo.NewSql(db)
@@ -33,9 +37,12 @@ func main() {
 	candidateVoteRepository := candidatevoterepo.NewSql(db)
 	voterRepository := voterrepo.NewSql(db)
 
-	electionService := electionsrv.New(electionRepository, candidateRepository, candidateVoteRepository)
+	electionSocket := electionsck.NewWs()
+	voteSocket := votesck.NewWs()
+
+	electionService := electionsrv.New(electionRepository, candidateRepository, candidateVoteRepository, electionSocket)
 	candidateService := candidatesrv.New(candidateRepository, candidateVoteRepository)
-	voterService := votersrv.New(voterRepository, electionRepository, candidateVoteRepository)
+	voterService := votersrv.New(voterRepository, electionRepository, candidateVoteRepository, voteSocket)
 
 	electionHandler := electionhdl.NewRest(electionService)
 	candidateHandler := candidatehdl.NewRest(candidateService)
@@ -44,6 +51,8 @@ func main() {
 	routes.ElectionEndpoints(rest, electionHandler)
 	routes.CandidateEndpoints(rest, candidateHandler)
 	routes.VoteEndpoints(rest, voterHandler)
+
+	routes.WebSocket(rest, wsHub)
 
 	pkg.Started()
 	rest.Listen(fmt.Sprintf(":%v", configs.Server.Port))

@@ -6,16 +6,18 @@ import (
 	"election-service/internal/utils"
 	"election-service/internal/utils/resp"
 	"election-service/pkg"
+	"strconv"
 )
 
 type Service struct {
 	voterRepo    ports.VoterRepository
 	electionRepo ports.ElectionRepository
 	voteRepo     ports.CandidateVoteRepository
+	voteSock     ports.VoteSocket
 }
 
-func New(voterRepo ports.VoterRepository, electionRepo ports.ElectionRepository, voteRepo ports.CandidateVoteRepository) Service {
-	return Service{voterRepo: voterRepo, electionRepo: electionRepo, voteRepo: voteRepo}
+func New(voterRepo ports.VoterRepository, electionRepo ports.ElectionRepository, voteRepo ports.CandidateVoteRepository, voteSock ports.VoteSocket) Service {
+	return Service{voterRepo: voterRepo, electionRepo: electionRepo, voteRepo: voteRepo, voteSock: voteSock}
 }
 
 func (s Service) CreateVoter(data models.CreateVoterData) models.Response {
@@ -48,7 +50,23 @@ func (s Service) CreateVoter(data models.CreateVoterData) models.Response {
 	}
 	_ = response
 
-	s.voteRepo.IncreaseById(data.CandidateId)
+	vote, err := s.voteRepo.FindByCandidateId(data.CandidateId)
+
+	if vote == nil {
+		s.voteRepo.Create(models.CandidateVote{
+			CandidateId: data.CandidateId,
+			VotedCount:  1,
+		})
+	} else {
+		s.voteRepo.IncreaseByCandidateId(data.CandidateId)
+	}
+
+	candidateVote := models.CandidateVoteResponse{
+		Id:         strconv.Itoa(data.CandidateId),
+		VotedCount: vote.VotedCount + 1,
+	}
+
+	s.voteSock.VoteUpdated(candidateVote)
 
 	return resp.OK(models.Json{"status": true})
 }

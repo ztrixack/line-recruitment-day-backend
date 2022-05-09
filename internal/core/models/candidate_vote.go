@@ -1,14 +1,12 @@
 package models
 
 type CandidateVote struct {
-	Model
-	CandidateId int `json:"candidateId" gorm:"unique"`
+	CandidateId int `json:"candidateId" gorm:"unique,primaryKey;autoIncrement:false"`
 	VotedCount  int `json:"votedCount"`
 }
 
 type CreateCandidateVoteData struct {
 	CandidateId int `json:"candidateId"`
-	VotedCount  int `json:"votedCount"`
 }
 
 type UpdateCandidateVoteData struct {
@@ -16,7 +14,6 @@ type UpdateCandidateVoteData struct {
 }
 
 type CandidateVoteResponse struct {
-	Id          int    `json:"id"`
-	CandidateId int    `json:"candidateId"`
-	VotedCount  string `json:"votedCount"`
+	Id         string `json:"id"`
+	VotedCount int    `json:"votedCount"`
 }

@@ -17,10 +17,11 @@ type Service struct {
 	electionRepo  ports.ElectionRepository
 	candidateRepo ports.CandidateRepository
 	voteRepo      ports.CandidateVoteRepository
+	electionSock  ports.ElectionSocket
 }
 
-func New(electionRepo ports.ElectionRepository, candidateRepo ports.CandidateRepository, voteRepo ports.CandidateVoteRepository) Service {
-	return Service{electionRepo: electionRepo, candidateRepo: candidateRepo, voteRepo: voteRepo}
+func New(electionRepo ports.ElectionRepository, candidateRepo ports.CandidateRepository, voteRepo ports.CandidateVoteRepository, electionSock ports.ElectionSocket) Service {
+	return Service{electionRepo: electionRepo, candidateRepo: candidateRepo, voteRepo: voteRepo, electionSock: electionSock}
 }
 
 func (s Service) GetElectionResult() models.Response {
@@ -87,7 +88,7 @@ func (s Service) GetElection() models.Response {
 		return resp.InternalServerError
 	}
 
-	return resp.OK(result)
+	return resp.OK(models.Json{"status": "ok", "enable": result.Enable, "state": result.State})
 }
 
 func (s Service) UpdateElection(data models.UpdateElectionData) models.Response {
@@ -108,6 +109,14 @@ func (s Service) UpdateElection(data models.UpdateElectionData) models.Response 
 	if count != 1 {
 		return resp.NotFoundError
 	}
+
+	response := models.ElectionResponse{
+		Status: "ok",
+		Enable: data.Enable,
+		State:  data.State,
+	}
+
+	s.electionSock.StatusUpdated(response)
 
 	return resp.OK(models.Json{"status": "ok", "enable": data.Enable})
 }
